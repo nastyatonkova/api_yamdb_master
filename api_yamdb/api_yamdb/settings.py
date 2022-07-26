@@ -24,10 +24,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'api.apps.ApiConfig',
     'reviews.apps.ReviewsConfig',
-    'rest_framework',
-    'api',
-    'reviews',
-    'django_filters',
+    # 'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -110,3 +107,5 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
 
 AUTH_USER_MODEL = 'reviews.YaUser'
+
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'
