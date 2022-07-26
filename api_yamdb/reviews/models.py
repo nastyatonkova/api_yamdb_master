@@ -11,7 +11,13 @@ class YaUser(AbstractUser):
         (MODERATOR, 'Moderator'),
         (USER, 'User'),
     )
-    role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, blank=True, null=True)
+    role = models.PositiveSmallIntegerField(
+        verbose_name='Роль',
+        choices=ROLE_CHOICES,
+        blank=True,
+        null=True,
+        default=USER
+    )
     email = models.EmailField(
         unique=True,
         verbose_name='Электронная почта'
@@ -21,12 +27,6 @@ class YaUser(AbstractUser):
         verbose_name='Имя пользователя',
         unique=True,
         null=True,
-    )
-    role = models.CharField(
-        max_length=150,
-        choices=ROLE_CHOICES,
-        default=USER,
-        verbose_name='Роль'
     )
 
     USERNAME_FIELD = 'email'
