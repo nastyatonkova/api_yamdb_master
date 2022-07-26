@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class YaUser(AbstractUser):
@@ -34,7 +35,11 @@ class Reviews(models.Model):
     text = models.TextField()
     author = models.ForeignKey(
         YaUser, on_delete=models.CASCADE, related_name='reviews')
-    score = models.IntegerField()
+    score = models.IntegerField(
+        validators=[
+            MaxValueValidator(10),
+            MinValueValidator(1)
+        ])
     pub_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
