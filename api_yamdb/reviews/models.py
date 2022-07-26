@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+
 class YaUser(AbstractUser):
     ADMIN = 1
     MODERATOR = 2
