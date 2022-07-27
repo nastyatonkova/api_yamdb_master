@@ -1,5 +1,10 @@
 from rest_framework import serializers
-from reviews.models import Reviews, Comments, Category, Genre, Title, YaUser
+from django.core.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
+
+from reviews.models import (Reviews, Comments,
+                            Category, Genre,
+                            Title, YaUser)
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -27,16 +32,16 @@ class CommentSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
-        exclude = ('id', )
         model = Category
+        exclude = ('id', )
         lookup_field = 'slug'
 
 
 class GenreSerializer(serializers.ModelSerializer):
 
     class Meta:
-        exclude = ('id', )
         model = Genre
+        exclude = ('id', )
         lookup_field = 'slug'
 
 
@@ -49,8 +54,8 @@ class TitleReadSerializer(serializers.ModelSerializer):
     rating = serializers.IntegerField(read_only=True)
 
     class Meta:
-        fields = '__all__'
         model = Title
+        fields = '__all__'
 
 
 class TitleWriteSerializer(serializers.ModelSerializer):
@@ -65,27 +70,64 @@ class TitleWriteSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        fields = '__all__'
         model = Title
+        fields = '__all__'
 
 
 class YaUserSerializer(serializers.ModelSerializer):
 
     class Meta:
-        fields = ('id', 'username', 'email')
         model = YaUser
+        fields = (
+            'id', 'username', 'email', 'first_name',
+            'last_name', 'bio', 'role'
+        )
 
 
-class MeSerializer(serializers.ModelSerializer):
-    role = serializers.CharField(read_only=True)
+class NotAdminSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = YaUser
+        fields = (
+            'id', 'username', 'email', 'first_name',
+            'last_name', 'bio', 'role'
+        )
+        read_only_fields = ('id', 'role',)
+
+
+class GetTokenSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(
+        required=True
+    )
+    confirmation_code = serializers.CharField(
+        required=True
+    )
 
     class Meta:
         model = YaUser
         fields = (
             'username',
-            'email',
-            'first_name',
-            'last_name',
-            'bio',
-            'role'
+            'confirmation_code'
         )
+
+
+class SignUpSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = YaUser
+        fields = ('email', 'username')
+
+
+# class MeSerializer(serializers.ModelSerializer):
+#     role = serializers.CharField(read_only=True)
+
+#     class Meta:
+#         model = YaUser
+#         fields = (
+#             'username',
+#             'email',
+#             'first_name',
+#             'last_name',
+#             'bio',
+#             'role'
+#         )
