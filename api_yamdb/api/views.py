@@ -1,16 +1,16 @@
 from api.filters import TitleFilter
 from django.db.models import Avg
-# from django_filters.rest_framework import DjangoFilterBackend
+from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from rest_framework.filters import SearchFilter
 from rest_framework import viewsets
-from reviews.models import Category, Genre, Title, Reviews, Comments
+from reviews.models import Category, Genre, Title, Reviews, Comments, YaUser
 
 from .mixins import ModelMixinSet
 from .permissions import IsAdminUserOrReadOnly
 from .serializers import (CategorySerializer, GenreSerializer,
                           TitleReadSerializer, TitleWriteSerializer, 
-                          ReviewSerializer, CommentSerializer)
+                          ReviewSerializer, CommentSerializer, YaUserSerializer)
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
@@ -88,3 +88,8 @@ class TitleViewSet(viewsets.ModelViewSet):
         if self.action in ('list', 'retrieve'):
             return TitleReadSerializer
         return TitleWriteSerializer
+
+
+class YaUserViewSet(viewsets.ModelViewSet):
+    queryset = YaUser.objects.all()
+    serializer_class = YaUserSerializer

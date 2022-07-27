@@ -31,6 +31,24 @@ class YaUser(AbstractUser):
         unique=True,
         null=True,
     )
+    first_name = models.TextField(
+        verbose_name='Имя',
+        max_length=50,
+        blank=True,
+        null=True,
+    )
+    last_name = models.TextField(
+        verbose_name='Фамилия',
+        max_length=50,
+        blank=True,
+        null=True,
+    )
+    bio = models.TextField(
+        verbose_name='О себе',
+        max_length=500,
+        blank=True,
+        null=True
+    )
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ('username',)
@@ -42,6 +60,9 @@ class YaUser(AbstractUser):
     @property
     def is_admin(self):
         return self.role == self.ADMIN
+
+    def __str__(self):
+        return self.username
 
     class Meta:
         ordering = ('id',)
