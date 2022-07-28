@@ -10,9 +10,9 @@ from reviews.models import (Category,
                             GenreTitle,
                             Title,
                             Comment,
-                            Review)
+                            Review,
+                            YaUser)
 
-User = get_user_model()
 
 
 def category_create(row):
@@ -49,7 +49,7 @@ def genre_title_create(row):
 
 
 def users_create(row):
-    User.objects.get_or_create(
+    YaUser.objects.get_or_create(
         id=row[0],
         username=row[1],
         email=row[2],
