@@ -1,4 +1,5 @@
 from rest_framework import permissions
+from rest_framework.exceptions import PermissionDenied
 
 
 class AdminOnly(permissions.BasePermission):
@@ -38,3 +39,15 @@ class AdminModeratorAuthorPermission(permissions.BasePermission):
             or request.user.is_moderator
             or request.user.is_admin
         )
+
+
+class IsAuthorModeratorAdminOrReadOnly(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in ['PATCH', 'PUT', 'DELETE']:
+            if not (obj.author == request.user or
+                    request.user.is_moderator or
+                    request.user.is_admin):
+                raise PermissionDenied('Изменение чужого контента запрещено!')
+            return True
+        return True
+    
