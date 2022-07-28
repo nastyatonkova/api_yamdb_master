@@ -201,3 +201,12 @@ class Comments(models.Model):
 
     def __str__(self):
         return self.text
+
+
+class GenreTitle(models.Model):
+    """An intermediate model for implementing the attitude of many to many."""
+    title = models.ForeignKey(Title, on_delete=models.CASCADE)
+    genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return f'{self.title} {self.genre}'

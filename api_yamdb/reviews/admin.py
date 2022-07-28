@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models import (
     Category, Comments, 
     Genre, Reviews, Title, 
-    YaUser,
+    YaUser, GenreTitle
 )
 
 @admin.register(Category)
@@ -60,7 +60,7 @@ class TitleAdmin(admin.ModelAdmin):
         'year',
         'category',
         'description',
-        'genre',
+        # 'genre',
     )
     search_fields = ('name',)
     list_filter = ('name',)
@@ -81,3 +81,7 @@ class UserAdmin(admin.ModelAdmin):
     search_fields = ('username', 'role',)
     list_filter = ('username',)
     empty_value_display = '-nothing-'
+
+@admin.register(GenreTitle)
+class GenreTitleAdmin(admin.ModelAdmin):
+    pass
