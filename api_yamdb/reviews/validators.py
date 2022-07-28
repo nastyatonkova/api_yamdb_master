@@ -8,3 +8,11 @@ def validate_year(value):
         raise ValidationError(
             f'{value} не может быть больше {now}'
         )
+
+
+def validate_username(value):
+    if value == 'me':
+        raise ValidationError(
+            ('Имя пользователя не может быть <me>.'),
+            params={'value': value},
+        )

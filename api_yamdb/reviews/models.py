@@ -1,89 +1,110 @@
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.tokens import default_token_generator
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
-from .validators import validate_year
+from .validators import validate_year, validate_username
+
+
+USER = 'user'
+ADMIN = 'admin'
+MODERATOR = 'moderator'
+
+ROLE_CHOICES = [
+    (USER, USER),
+    (ADMIN, ADMIN),
+    (MODERATOR, MODERATOR)
+]
 
 
 class YaUser(AbstractUser):
-    ADMIN = 1
-    MODERATOR = 2
-    USER = 3
-    ROLE_CHOICES = (
-        (ADMIN, 'Administrator'),
-        (MODERATOR, 'Moderator'),
-        (USER, 'User'),
-    )
-    role = models.PositiveSmallIntegerField(
-        verbose_name='Роль',
-        choices=ROLE_CHOICES,
-        blank=True,
-        null=True,
-        default=USER
-    )
-    email = models.EmailField(
-        unique=True,
-        verbose_name='Электронная почта'
-    )
     username = models.CharField(
         max_length=150,
-        verbose_name='Имя пользователя',
+        verbose_name='User name',
+        validators=(validate_username,),
         unique=True,
-        null=True,
+        blank=False,
+        null=False,
     )
-    first_name = models.TextField(
-        verbose_name='Имя',
+    email = models.EmailField(
+        max_length=254,
+        verbose_name='User email address',
+        unique=True,
+        blank=False,
+        null=False,
+    )
+    role = models.CharField(
+        max_length=20,
+        verbose_name='User role',
+        choices=ROLE_CHOICES,
+        default=USER
+    )
+    first_name = models.CharField(
         max_length=50,
+        verbose_name='User first name',
         blank=True,
         null=True,
     )
-    last_name = models.TextField(
-        verbose_name='Фамилия',
+    last_name = models.CharField(
         max_length=50,
+        verbose_name='User last name',
         blank=True,
         null=True,
     )
     bio = models.TextField(
-        verbose_name='О себе',
+        verbose_name='About the user',
         max_length=500,
         blank=True,
         null=True
     )
+    confirmation_code = models.CharField(
+        max_length=255,
+        verbose_name='Confirmation code',
+        blank=False,
+        null=True,
+        default='XXXX',
+    )
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ('username',)
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
 
     @property
+    def is_user(self):
+        return self.role == USER
+    
+    @property
     def is_moderator(self):
-        return self.role == self.MODERATOR
+        return self.role == MODERATOR
 
     @property
     def is_admin(self):
-        return self.role == self.ADMIN
+        return self.role == ADMIN
 
     def __str__(self):
         return self.username
 
-    class Meta:
-        ordering = ('id',)
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
 
-        constraints = [
-            models.UniqueConstraint(
-                fields=('username', 'email'),
-                name='unique_username_email'
-            ),
-        ]
+@receiver(post_save, sender=YaUser)
+def post_save(sender, instance, created, **kwargs):
+    if created:
+        confirmation_code = default_token_generator.make_token(
+            instance
+        )
+        instance.confirmation_code = confirmation_code
+        instance.save()
 
 
 class Category(models.Model):
     name = models.CharField(
-        'category',
+        'Category',
         max_length=200
     )
     slug = models.SlugField(
-        'slug category',
+        'Slug category',
         unique=True,
         db_index=True
     )
@@ -98,11 +119,11 @@ class Category(models.Model):
 
 class Genre(models.Model):
     name = models.CharField(
-        'genre',
+        'Genre',
         max_length=200
     )
     slug = models.SlugField(
-        'slug genre',
+        'Slug genre',
         unique=True,
         db_index=True
     )
@@ -117,24 +138,24 @@ class Genre(models.Model):
 
 class Title(models.Model):
     name = models.CharField(
-        'title',
+        'Title',
         max_length=200,
         db_index=True
     )
     year = models.IntegerField(
-        'year',
+        'Year',
         validators=(validate_year, )
     )
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
         related_name='titles',
-        verbose_name='category',
+        verbose_name='Category',
         null=True,
         blank=True
     )
     description = models.TextField(
-        'description',
+        'Description',
         max_length=255,
         null=True,
         blank=True
@@ -142,7 +163,7 @@ class Title(models.Model):
     genre = models.ManyToManyField(
         Genre,
         related_name='titles',
-        verbose_name='genre'
+        verbose_name='Genre'
     )
 
     class Meta:
@@ -153,7 +174,7 @@ class Title(models.Model):
         return self.name
 
 
-class Reviews(models.Model):
+class Review(models.Model):
     title = models.ForeignKey(
         Title, on_delete=models.CASCADE, related_name='reviews')
     text = models.TextField()
@@ -166,13 +187,16 @@ class Reviews(models.Model):
         ])
     pub_date = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = [['title', 'author']]
+
     def __str__(self):
         return self.text
 
 
-class Comments(models.Model):
+class Comment(models.Model):
     review = models.ForeignKey(
-        Reviews, on_delete=models.CASCADE, related_name='comments')
+        Review, on_delete=models.CASCADE, related_name='comments')
     text = models.TextField()
     author = models.ForeignKey(
         YaUser, on_delete=models.CASCADE, related_name='comments')
@@ -180,3 +204,12 @@ class Comments(models.Model):
 
     def __str__(self):
         return self.text
+
+
+class GenreTitle(models.Model):
+    """An intermediate model for implementing the attitude of many to many."""
+    title = models.ForeignKey(Title, on_delete=models.CASCADE)
+    genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return f'{self.title} {self.genre}'
