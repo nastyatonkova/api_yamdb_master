@@ -165,15 +165,6 @@ class Title(models.Model):
         related_name='titles',
         verbose_name='Genre'
     )
-    #rating = models.DecimalField(
-    #    max_digits=4,
-    #    decimal_places=2,
-    #    null=True,
-    #    default=0,
-    #    validators=[
-    #        MaxValueValidator(10.00),
-    #        MinValueValidator(0)
-    #    ])
 
     class Meta:
         verbose_name = 'Art work'
@@ -183,7 +174,7 @@ class Title(models.Model):
         return self.name
 
 
-class Reviews(models.Model):
+class Review(models.Model):
     title = models.ForeignKey(
         Title, on_delete=models.CASCADE, related_name='reviews')
     text = models.TextField()
@@ -196,13 +187,16 @@ class Reviews(models.Model):
         ])
     pub_date = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = [['title', 'author']]
+
     def __str__(self):
         return self.text
 
 
-class Comments(models.Model):
+class Comment(models.Model):
     review = models.ForeignKey(
-        Reviews, on_delete=models.CASCADE, related_name='comments')
+        Review, on_delete=models.CASCADE, related_name='comments')
     text = models.TextField()
     author = models.ForeignKey(
         YaUser, on_delete=models.CASCADE, related_name='comments')

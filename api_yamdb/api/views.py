@@ -8,13 +8,11 @@ from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.pagination import LimitOffsetPagination
 
 from reviews.models import (Category, Genre,
-                            Title, Reviews, 
-                            Comments, YaUser)
+                            Title, Review,
+                            Comment, YaUser)
 from api.filters import TitleFilter
 from .mixins import ModelMixinSet
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -31,7 +29,6 @@ from .serializers import (CategorySerializer, CommentSerializer,
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
-    pagination_class = LimitOffsetPagination
     permission_classes = (
         IsAuthenticatedOrReadOnly,
         IsAuthorModeratorAdminOrReadOnly
@@ -39,8 +36,8 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         title_id = self.kwargs.get('title_id')
-        reviews = Reviews.objects.filter(title=title_id)
-        return reviews
+        title = get_object_or_404(Title, id=title_id)
+        return title.reviews.all()
 
     def perform_create(self, serializer):
         title_id = self.kwargs.get('title_id')
@@ -53,22 +50,19 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    pagination_class = LimitOffsetPagination
     permission_classes = (
         IsAuthenticatedOrReadOnly,
         IsAuthorModeratorAdminOrReadOnly
     )
 
     def get_queryset(self):
-        title_id = self.kwargs.get('title_id')
         review_id = self.kwargs.get('review_id')
-        reviews = Reviews.objects.filter(title=title_id)
-        comments = reviews.comments.filter(review=review_id)
-        return comments
+        review = get_object_or_404(Review, id=review_id)
+        return review.comments.all()
 
     def perform_create(self, serializer):
         review_id = self.kwargs.get('review_id')
-        review = get_object_or_404(Reviews, id=review_id)
+        review = get_object_or_404(Review, id=review_id)
         serializer.save(
             author=self.request.user,
             review=review
@@ -206,7 +200,7 @@ class APISignup(APIView):
         email.send()
 
     def post(self, request):
-        serializer = SignUpSerializer(data=serializer.data)
+        serializer = SignUpSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         email_body = (
