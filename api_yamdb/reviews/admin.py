@@ -1,9 +1,9 @@
 from django.contrib import admin
 
 from .models import (
-    Category, Comment,
-    Genre, Review, Title,
-    YaUser,
+    Category, Comment, 
+    Genre, Review, Title, 
+    YaUser, GenreTitle
 )
 
 
@@ -62,7 +62,7 @@ class TitleAdmin(admin.ModelAdmin):
         'year',
         'category',
         'description',
-        #'genre',
+        # 'genre',
     )
     search_fields = ('name',)
     list_filter = ('name',)
@@ -83,3 +83,7 @@ class UserAdmin(admin.ModelAdmin):
     search_fields = ('username', 'role',)
     list_filter = ('username',)
     empty_value_display = '-nothing-'
+
+@admin.register(GenreTitle)
+class GenreTitleAdmin(admin.ModelAdmin):
+    pass
