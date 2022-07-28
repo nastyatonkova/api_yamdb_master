@@ -88,7 +88,7 @@ class YaUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = YaUser
         fields = (
-            'id', 'username', 'email', 'first_name',
+            'username', 'email', 'first_name',
             'last_name', 'bio', 'role'
         )
 
@@ -125,18 +125,3 @@ class SignUpSerializer(serializers.ModelSerializer):
     class Meta:
         model = YaUser
         fields = ('email', 'username')
-
-
-# class MeSerializer(serializers.ModelSerializer):
-#     role = serializers.CharField(read_only=True)
-
-#     class Meta:
-#         model = YaUser
-#         fields = (
-#             'username',
-#             'email',
-#             'first_name',
-#             'last_name',
-#             'bio',
-#             'role'
-#         )
