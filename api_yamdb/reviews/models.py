@@ -165,6 +165,15 @@ class Title(models.Model):
         related_name='titles',
         verbose_name='Genre'
     )
+    #rating = models.DecimalField(
+    #    max_digits=4,
+    #    decimal_places=2,
+    #    null=True,
+    #    default=0,
+    #    validators=[
+    #        MaxValueValidator(10.00),
+    #        MinValueValidator(0)
+    #    ])
 
     class Meta:
         verbose_name = 'Art work'

@@ -10,24 +10,32 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.pagination import LimitOffsetPagination
 
 from reviews.models import (Category, Genre,
                             Title, Reviews, 
                             Comments, YaUser)
 from api.filters import TitleFilter
 from .mixins import ModelMixinSet
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .permissions import (IsAdminUserOrReadOnly,
-                            AdminModeratorAuthorPermission, 
-                            AdminOnly)
+                          AdminModeratorAuthorPermission,
+                          AdminOnly,
+                          IsAuthorModeratorAdminOrReadOnly,)
 from .serializers import (CategorySerializer, CommentSerializer,
-                            GenreSerializer, GetTokenSerializer,
-                            NotAdminSerializer, ReviewSerializer,
-                            SignUpSerializer, TitleReadSerializer,
-                           TitleWriteSerializer, YaUserSerializer)
+                          GenreSerializer, GetTokenSerializer,
+                          NotAdminSerializer, ReviewSerializer,
+                          SignUpSerializer, TitleReadSerializer,
+                          TitleWriteSerializer, YaUserSerializer)
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
+    pagination_class = LimitOffsetPagination
+    permission_classes = (
+        IsAuthenticatedOrReadOnly,
+        IsAuthorModeratorAdminOrReadOnly
+    )
 
     def get_queryset(self):
         title_id = self.kwargs.get('title_id')
@@ -45,6 +53,11 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
+    pagination_class = LimitOffsetPagination
+    permission_classes = (
+        IsAuthenticatedOrReadOnly,
+        IsAuthorModeratorAdminOrReadOnly
+    )
 
     def get_queryset(self):
         title_id = self.kwargs.get('title_id')

@@ -29,6 +29,7 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ('review',)
     empty_value_display = '-nothing-'
 
+
 @admin.register(Genre)
 class GenreAdmin(admin.ModelAdmin):
     list_display = (
@@ -60,7 +61,7 @@ class TitleAdmin(admin.ModelAdmin):
         'year',
         'category',
         'description',
-        'genre',
+        #'genre',
     )
     search_fields = ('name',)
     list_filter = ('name',)

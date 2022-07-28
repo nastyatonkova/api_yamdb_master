@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
-
+from rest_framework.validators import UniqueTogetherValidator
 from reviews.models import (Reviews, Comments,
                             Category, Genre,
                             Title, YaUser)
@@ -16,6 +16,12 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Reviews
         fields = ('id', 'text', 'author', 'score', 'pub_date')
         read_only_fields = ('id', 'author', 'pub_date')
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Reviews.objects.all(),
+                fields=['id', 'author'],
+                message='Вы уже оставили отзыв на это произведение!',
+            )]
 
 
 class CommentSerializer(serializers.ModelSerializer):
