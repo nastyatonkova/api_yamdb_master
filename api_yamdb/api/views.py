@@ -1,4 +1,4 @@
-from django.core.mail import EmailMessage
+from django.core.mail import send_mail
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -173,8 +173,13 @@ class APIGetToken(APIView):
             token = RefreshToken.for_user(user).access_token
             return Response(
                 {'token': str(token)},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_201_CREATED
             )
+        return Response(
+            {'confirmation_code': 'Your confirmation code is incorrect!'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+            
 
 
 class APISignup(APIView):
@@ -192,12 +197,13 @@ class APISignup(APIView):
 
     @staticmethod
     def send_email(data):
-        email = EmailMessage(
-            subject=data['email_subject'],
-            body=data['email_body'],
-            to=[data['to_email']]
+        send_mail(
+            data['email_subject'],
+            data['email_body'],
+            None,
+            [data['to_email']],
+            fail_silently=False
         )
-        email.send()
 
     def post(self, request):
         serializer = SignUpSerializer(data=request.data)
