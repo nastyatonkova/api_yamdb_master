@@ -227,7 +227,7 @@ Example of a successful response:
 ## License
 **Prepared by the development team: 
 
-Ivan Maksimov [GitHub Profile](https://github.com/Ivan-Maksimov),
-Petr Buikin [GitHub Profile](https://github.com/nikpup),
+Ivan Maksimov [GitHub Profile](https://github.com/Ivan-Maksimov), 
+Petr Buikin [GitHub Profile](https://github.com/nikpup), 
 Anastasiia Tonkova [GitHub Profile](https://github.com/nastyatonkova)
 **
