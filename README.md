@@ -1,5 +1,5 @@
 
-## YamDB Service
+## YaMDb Service
 
 The YaMDb project collects user reviews of works. 
 The works are divided into categories: "Books", "Films", "Music". 
