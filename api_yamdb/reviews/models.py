@@ -1,12 +1,11 @@
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.tokens import default_token_generator
-from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from .validators import validate_year, validate_username
-
+from .validators import validate_username, validate_year
 
 USER = 'user'
 ADMIN = 'admin'
@@ -20,6 +19,7 @@ ROLE_CHOICES = [
 
 
 class YaUser(AbstractUser):
+    """Customized user model."""
     username = models.CharField(
         max_length=150,
         verbose_name='User name',
@@ -75,7 +75,7 @@ class YaUser(AbstractUser):
     @property
     def is_user(self):
         return self.role == USER
-    
+
     @property
     def is_moderator(self):
         return self.role == MODERATOR
@@ -99,6 +99,7 @@ def post_save(sender, instance, created, **kwargs):
 
 
 class Category(models.Model):
+    """Category model."""
     name = models.CharField(
         'Category',
         max_length=200
@@ -108,7 +109,7 @@ class Category(models.Model):
         unique=True,
         db_index=True
     )
-    
+
     class Meta:
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
@@ -118,6 +119,7 @@ class Category(models.Model):
 
 
 class Genre(models.Model):
+    """Genre model."""
     name = models.CharField(
         'Genre',
         max_length=200
@@ -137,6 +139,7 @@ class Genre(models.Model):
 
 
 class Title(models.Model):
+    """Masterpiece model."""
     name = models.CharField(
         'Title',
         max_length=200,

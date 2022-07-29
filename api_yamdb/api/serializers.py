@@ -1,10 +1,9 @@
 from rest_framework import serializers
-from reviews.models import (Review, Comment,
-                            Category, Genre,
-                            Title, YaUser)
+from reviews.models import Category, Comment, Genre, Review, Title, YaUser
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    """Serializer for Review model data."""
     author = serializers.SlugRelatedField(
         read_only=True,
         slug_field='username',
@@ -12,6 +11,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     )
 
     def validate(self, attr):
+        """There is possible to live only one review on masterpiece."""
         if self.context.get('view').request.method == 'POST':
             title_id = self.context.get('view').kwargs.get('title_id')
             author = self.context.get('view').request.user
@@ -28,6 +28,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    """Serializer for Comment model data."""
     author = serializers.SlugRelatedField(
         read_only=True, slug_field='username'
     )
@@ -39,6 +40,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    """Serializer for Category model data."""
 
     class Meta:
         model = Category
@@ -47,6 +49,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class GenreSerializer(serializers.ModelSerializer):
+    """Serializer for Genre model data."""
 
     class Meta:
         model = Genre
@@ -55,6 +58,7 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class TitleReadSerializer(serializers.ModelSerializer):
+    """Serializer to read Title model data."""
     category = CategorySerializer(read_only=True)
     genre = GenreSerializer(
         read_only=True,
@@ -68,6 +72,7 @@ class TitleReadSerializer(serializers.ModelSerializer):
 
 
 class TitleWriteSerializer(serializers.ModelSerializer):
+    """Serializer to write Title model data."""
     category = serializers.SlugRelatedField(
         queryset=Category.objects.all(),
         slug_field='slug'
@@ -84,6 +89,7 @@ class TitleWriteSerializer(serializers.ModelSerializer):
 
 
 class YaUserSerializer(serializers.ModelSerializer):
+    """Serializer for YaUser model."""
 
     class Meta:
         model = YaUser
@@ -94,7 +100,7 @@ class YaUserSerializer(serializers.ModelSerializer):
 
 
 class NotAdminSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = YaUser
         fields = (
@@ -105,6 +111,7 @@ class NotAdminSerializer(serializers.ModelSerializer):
 
 
 class GetTokenSerializer(serializers.ModelSerializer):
+    """Checking username and confirmation code before giving token."""
     username = serializers.CharField(
         required=True
     )
@@ -121,6 +128,7 @@ class GetTokenSerializer(serializers.ModelSerializer):
 
 
 class SignUpSerializer(serializers.ModelSerializer):
+    """Checking Email and username before signing up."""
 
     class Meta:
         model = YaUser

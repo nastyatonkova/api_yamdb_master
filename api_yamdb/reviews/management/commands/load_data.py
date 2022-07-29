@@ -1,18 +1,10 @@
 import csv
 import os
 
-from django.core.management.base import BaseCommand
 from django.conf import settings
-from django.contrib.auth import get_user_model
-
-from reviews.models import (Category,
-                            Genre,
-                            GenreTitle,
-                            Title,
-                            Comment,
-                            Review,
-                            YaUser)
-
+from django.core.management.base import BaseCommand
+from reviews.models import (Category, Comment, Genre, GenreTitle, Review,
+                            Title, YaUser)
 
 
 def category_create(row):

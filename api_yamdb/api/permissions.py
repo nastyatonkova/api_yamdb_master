@@ -50,4 +50,3 @@ class IsAuthorModeratorAdminOrReadOnly(permissions.BasePermission):
                 raise PermissionDenied('Изменение чужого контента запрещено!')
             return True
         return True
-    
