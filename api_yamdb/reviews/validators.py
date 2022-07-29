@@ -3,6 +3,7 @@ from django.utils import timezone
 
 
 def validate_year(value):
+    """Year of masterpiece cannot be bigger than today."""
     now = timezone.now().year
     if value > now:
         raise ValidationError(
@@ -11,6 +12,7 @@ def validate_year(value):
 
 
 def validate_username(value):
+    """User name cannot be ME."""
     if value == 'me':
         raise ValidationError(
             ('Имя пользователя не может быть <me>.'),

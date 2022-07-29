@@ -1,3 +1,4 @@
+from api.filters import TitleFilter
 from django.core.mail import send_mail
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
@@ -5,21 +6,17 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import (IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
+from reviews.models import Category, Genre, Review, Title, YaUser
 
-from reviews.models import (Category, Genre,
-                            Title, Review,
-                            Comment, YaUser)
-from api.filters import TitleFilter
 from .mixins import ModelMixinSet
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from .permissions import (IsAdminUserOrReadOnly,
-                          AdminModeratorAuthorPermission,
-                          AdminOnly,
-                          IsAuthorModeratorAdminOrReadOnly,)
+from .permissions import (AdminModeratorAuthorPermission, AdminOnly,
+                          IsAdminUserOrReadOnly,
+                          IsAuthorModeratorAdminOrReadOnly)
 from .serializers import (CategorySerializer, CommentSerializer,
                           GenreSerializer, GetTokenSerializer,
                           NotAdminSerializer, ReviewSerializer,
@@ -101,7 +98,7 @@ class TitleViewSet(viewsets.ModelViewSet):
         rating=Avg('reviews__score')
     ).all()
     permission_classes = (IsAdminUserOrReadOnly,)
-    # filter_backends = (DjangoFilterBackend, )
+    filter_backends = (DjangoFilterBackend, )
     filterset_class = TitleFilter
 
     def get_serializer_class(self):
@@ -123,7 +120,7 @@ class YaUserViewSet(viewsets.ModelViewSet):
     search_fields = ('username',)
 
     @action(
-        methods=['GET','PATCH'],
+        methods=['GET', 'PATCH'],
         detail=False,
         permission_classes=(IsAuthenticated,),
         url_path='me'
@@ -179,7 +176,6 @@ class APIGetToken(APIView):
             {'confirmation_code': 'Your confirmation code is incorrect!'},
             status=status.HTTP_400_BAD_REQUEST
         )
-            
 
 
 class APISignup(APIView):
@@ -211,7 +207,7 @@ class APISignup(APIView):
         user = serializer.save()
         email_body = (
             f'Greetings, young {user.username}.'
-            f'\nTake your confirmation code for our API: {user.confirmation_code}'
+            f'\nTake your conf. code for our API: {user.confirmation_code}'
         )
         data = {
             'email_body': email_body,
