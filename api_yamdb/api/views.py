@@ -14,7 +14,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from reviews.models import Category, Genre, Review, Title, YaUser
 
 from .mixins import ModelMixinSet
-from .permissions import (AdminModeratorAuthorPermission, AdminOnly,
+from .permissions import (AdminOnly,
                           IsAdminUserOrReadOnly,
                           IsAuthorModeratorAdminOrReadOnly)
 from .serializers import (CategorySerializer, CommentSerializer,
