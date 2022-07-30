@@ -27,8 +27,7 @@ from .serializers import (CategorySerializer, CommentSerializer,
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     permission_classes = (
-        IsAuthenticatedOrReadOnly,
-        IsAuthorModeratorAdminOrReadOnly
+        IsAuthorModeratorAdminOrReadOnly,
     )
 
     def get_queryset(self):
@@ -48,8 +47,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = (
-        IsAuthenticatedOrReadOnly,
-        IsAuthorModeratorAdminOrReadOnly
+        IsAuthorModeratorAdminOrReadOnly,
     )
 
     def get_queryset(self):
