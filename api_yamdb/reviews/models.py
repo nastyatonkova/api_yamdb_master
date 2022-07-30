@@ -111,6 +111,7 @@ class Category(models.Model):
     )
 
     class Meta:
+        ordering = ('name',)
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
 
@@ -131,6 +132,7 @@ class Genre(models.Model):
     )
 
     class Meta:
+        ordering = ('name',)
         verbose_name = 'Genre'
         verbose_name_plural = 'Genries'
 
@@ -145,7 +147,7 @@ class Title(models.Model):
         max_length=200,
         db_index=True
     )
-    year = models.IntegerField(
+    year = models.PositiveSmallIntegerField(
         'Year',
         validators=(validate_year, )
     )
@@ -170,6 +172,7 @@ class Title(models.Model):
     )
 
     class Meta:
+        ordering = ('name',)
         verbose_name = 'Art work'
         verbose_name_plural = 'Art works'
 
