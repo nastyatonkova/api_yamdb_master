@@ -12,7 +12,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from reviews.models import Category, Genre, Review, Title, YaUser
 
-from .mixins import ModelViewSet
+from .mixins import CreateListDestroyViewSet
 from .permissions import (AdminOnly,
                           IsAdminUserOrReadOnly,
                           IsAuthorModeratorAdminOrReadOnly)
@@ -63,7 +63,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         )
 
 
-class CategoryViewSet(ModelViewSet):
+class CategoryViewSet(CreateListDestroyViewSet):
     """
     Receive all categoriers. Available without token.
     """
@@ -75,7 +75,7 @@ class CategoryViewSet(ModelViewSet):
     lookup_field = 'slug'
 
 
-class GenreViewSet(ModelViewSet):
+class GenreViewSet(CreateListDestroyViewSet):
     """
     Receive all genries. Available without token.
     """
