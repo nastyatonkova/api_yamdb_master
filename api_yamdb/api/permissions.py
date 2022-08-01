@@ -25,7 +25,7 @@ class IsAdminUserOrReadOnly(permissions.BasePermission):
         return False
 
 
-class IsAuthorModeratorAdminOrReadOnly(permissions.BasePermission):
+class IsAuthorModeratorAdminOrReadOnly(permissions.IsAuthenticatedOrReadOnly):
     def has_object_permission(self, request, view, obj):
         if request.method in ['PATCH', 'PUT', 'DELETE']:
             if not (obj.author == request.user

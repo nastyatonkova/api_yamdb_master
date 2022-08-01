@@ -13,7 +13,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from reviews.models import Category, Genre, Review, Title, YaUser
 
-from .mixins import ModelMixinSet
+from .mixins import ModelViewSet
 from .permissions import (AdminOnly,
                           IsAdminUserOrReadOnly,
                           IsAuthorModeratorAdminOrReadOnly)
@@ -27,8 +27,7 @@ from .serializers import (CategorySerializer, CommentSerializer,
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     permission_classes = (
-        IsAuthenticatedOrReadOnly,
-        IsAuthorModeratorAdminOrReadOnly
+        IsAuthorModeratorAdminOrReadOnly,
     )
 
     def get_queryset(self):
@@ -48,8 +47,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = (
-        IsAuthenticatedOrReadOnly,
-        IsAuthorModeratorAdminOrReadOnly
+        IsAuthorModeratorAdminOrReadOnly,
     )
 
     def get_queryset(self):
@@ -66,7 +64,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         )
 
 
-class CategoryViewSet(ModelMixinSet):
+class CategoryViewSet(ModelViewSet):
     """
     Receive all categoriers. Available without token.
     """
@@ -78,7 +76,7 @@ class CategoryViewSet(ModelMixinSet):
     lookup_field = 'slug'
 
 
-class GenreViewSet(ModelMixinSet):
+class GenreViewSet(ModelViewSet):
     """
     Receive all genries. Available without token.
     """
