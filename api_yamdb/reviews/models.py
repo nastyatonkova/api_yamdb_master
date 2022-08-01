@@ -111,7 +111,6 @@ class Category(models.Model):
     )
 
     class Meta:
-        ordering = ('name',)
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
 
@@ -132,7 +131,6 @@ class Genre(models.Model):
     )
 
     class Meta:
-        ordering = ('name',)
         verbose_name = 'Genre'
         verbose_name_plural = 'Genries'
 
@@ -147,7 +145,7 @@ class Title(models.Model):
         max_length=200,
         db_index=True
     )
-    year = models.PositiveSmallIntegerField(
+    year = models.IntegerField(
         'Year',
         validators=(validate_year, )
     )
@@ -172,7 +170,6 @@ class Title(models.Model):
     )
 
     class Meta:
-        ordering = ('name',)
         verbose_name = 'Art work'
         verbose_name_plural = 'Art works'
 
@@ -186,7 +183,7 @@ class Review(models.Model):
     text = models.TextField()
     author = models.ForeignKey(
         YaUser, on_delete=models.CASCADE, related_name='reviews')
-    score = models.PositiveSmallIntegerField(
+    score = models.IntegerField(
         validators=[
             MaxValueValidator(10),
             MinValueValidator(1)
