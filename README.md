@@ -17,8 +17,8 @@ The list of categories can be expanded by the administrator.
 
 Clone the repository and go to it on the command line:
 ```sh
-git clone git@github.com:Ivan-Maksimov/api_yamdb.git
-cd api_yamdb
+git clone git@github.com:nastyatonkova/api_yamdb_master.git
+
 ```
 
 
